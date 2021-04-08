@@ -4,6 +4,7 @@ import os
 import argparse
 import traceback
 from nbt.nbt import *
+import timeit
 
 parser = argparse.ArgumentParser(description="Search for Minecraft level.dats and dump the seeds in them.", allow_abbrev=True)
 parser.add_argument("-out", metavar="output file", default="seeds.txt", type=str, help="file to dump seeds to")
@@ -17,6 +18,8 @@ absroot = os.path.abspath(args.dir)
 worldsfound = 0
 
 print("walking directory {}...".format(absroot))
+
+start = timeit.default_timer()
 
 for root, dirs, files in os.walk(absroot):
     for file in files:
@@ -40,5 +43,5 @@ for root, dirs, files in os.walk(absroot):
 #               print(traceback.format_exc())
 #               print(e)
 
-print("done. found {} total worlds.".format(worldsfound))
+print("done. found {} total worlds in {:.3f}s.".format(worldsfound, timeit.default_timer()-start))
 
