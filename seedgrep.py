@@ -6,6 +6,13 @@ import traceback
 from nbt.nbt import *
 import timeit
 
+# from https://gist.github.com/hanleybrand/5224673
+def java_string_hashcode(s):
+    h = 0
+    for c in s:
+        h = (31 * h + ord(c)) & 0xFFFFFFFF
+    return ((h + 0x80000000) & 0xFFFFFFFF) - 0x80000000
+
 parser = argparse.ArgumentParser(description="Search for Minecraft level.dats and dump the seeds in them.", allow_abbrev=True)
 parser.add_argument("-out", metavar="output file", default="seeds.txt", type=str, help="file to dump seeds to")
 parser.add_argument("-dir", metavar="dir", default=".", type=str, help="the root directory to walk")
