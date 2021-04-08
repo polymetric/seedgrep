@@ -14,29 +14,36 @@ def java_string_hashcode(s):
     return ((h + 0x80000000) & 0xFFFFFFFF) - 0x80000000
 
 parser = argparse.ArgumentParser(description="Search for Minecraft level.dats and dump the seeds in them.", allow_abbrev=True)
+parser.add_argument("-seed", metavar="seed", required=False, default=None, type=str, help="optionally filter seeds before dumping them")
 parser.add_argument("-out", metavar="output file", default="seeds.txt", type=str, help="file to dump seeds to")
 parser.add_argument("-dir", metavar="dir", default=".", type=str, help="the root directory to walk")
 parser.add_argument("-verbose", default=False, action='store_true', help="print every seed to the console")
 args = parser.parse_args()
 
+if args.seed != None:
+    try:
+        targetseed = int(args.seed)
+    except:
+        targetseed = java_string_hashcode(args.seed)
+
 # TODO make this overwrite the output file, with a catch warning
 outfile = open(args.out, "a")
 absroot = os.path.abspath(args.dir)
 worldsfound = 0
-
-print("walking directory {}...".format(absroot))
-
 start = timeit.default_timer()
 
 for root, dirs, files in os.walk(absroot):
     for file in files:
-        if file != "level.dat" and file != "level.dat_old":
+#       if file != "level.dat" and file != "level.dat_old":
+        if file != "level.dat":
             continue
-        worldsfound += 1
         file = os.path.join(root, file)
         try:
             nbtfile = NBTFile(file, "rb")
             fileseed = nbtfile["Data"]["RandomSeed"].value
+            if args.seed != None and fileseed != targetseed:
+                continue
+            worldsfound += 1
             if args.verbose:
                 print("found seed {} in {}".format(fileseed, file))
             outfile.write("{}: {}\n".format(file, fileseed))
