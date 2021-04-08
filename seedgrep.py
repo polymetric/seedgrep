@@ -4,9 +4,15 @@ import os
 import argparse
 from nbt.nbt import *
 
-targetseed = 1337
+parser = argparse.ArgumentParser(description="Search for Minecraft level.dats with a certain seed.", allow_abbrev=True)
+parser.add_argument("-seed", metavar="seed", required=True, type=int, help="the seed to search for")
+parser.add_argument("-root", metavar="root", default=".", type=str, help="the root directory to walk")
 
-for root, dirs, files in os.walk("."):
+args = parser.parse_args()
+
+targetseed = args.seed
+
+for root, dirs, files in os.walk(args.root):
     for file in files:
         if file != "level.dat":
             continue
