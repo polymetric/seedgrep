@@ -18,7 +18,17 @@ parser.add_argument("-seed", metavar="seed", required=False, default=None, type=
 parser.add_argument("-out", metavar="output file", default="seeds.txt", type=str, help="file to dump seeds to")
 parser.add_argument("-dir", metavar="dir", default=".", type=str, help="the root directory to walk")
 parser.add_argument("-verbose", default=False, action='store_true', help="print every seed to the console")
+parser.add_argument("-interactive", default=False, action='store_true', help="use interactive mode")
 args = parser.parse_args()
+if args.interactive:
+    args.dir = None
+    while args.dir == None or os.path.exists(args.dir) == False:
+        args.dir = os.path.join(input("enter the folder or drive to scan (for example, C:): "), "/")
+        if os.path.exists(args.dir) == False:
+            print("invalid drive/folder, please try something else")
+    args.seed = input("enter the seed to search for (nothing means output all seeds): ")
+    if args.seed == "":
+        args.seed = None
 
 if args.seed != None:
     try:
@@ -57,5 +67,5 @@ for root, dirs, files in os.walk(absroot):
 #               print(traceback.format_exc())
 #               print(e)
 
-print("done. found {} total worlds in {:.3f}s.".format(worldsfound, timeit.default_timer()-start))
+print("done. found {} total worlds in {:.3f}s, dumped to file {}".format(worldsfound, timeit.default_timer()-start, args.out))
 
