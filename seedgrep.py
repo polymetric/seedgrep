@@ -5,6 +5,7 @@ import argparse
 import traceback
 from nbt.nbt import *
 import timeit
+from tqdm import tqdm
 
 # from https://gist.github.com/hanleybrand/5224673
 def java_string_hashcode(s):
@@ -42,7 +43,7 @@ absroot = os.path.abspath(args.dir)
 worldsfound = 0
 start = timeit.default_timer()
 
-for root, dirs, files in os.walk(absroot):
+for root, dirs, files in tqdm(os.walk(absroot)):
     for file in files:
 #       if file != "level.dat" and file != "level.dat_old":
         if file != "level.dat":
